@@ -6,34 +6,29 @@ import {
   Tile,
   InlineNotification,
 } from 'carbon-components-react'
-import { useAuth } from '../contexts/AuthContext'
-import { Link, useNavigate } from "react-router-dom"
-import '../styles/authentication.scss';
+import { useAuth } from '../../contexts/AuthContext'
+import { Link } from "react-router-dom"
+import '../../styles/authentication.scss';
 
 
-export default function Signup() {
+export default function ForgotPassword() {
   const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
-  const { signup } = useAuth();
+  const { resetPassword } = useAuth();
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault()
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError('Passwords do not match');
-    }
-
     try {
+      setMessage('');
       setError('');
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
-      navigate('/');
+      await resetPassword(emailRef.current.value);
+      setMessage('Check you inbox for further instructions')
     } catch {
-      setError('Failed to create an account');
+      setError('Failed to reset password');
     }
     setLoading(false)
   }
@@ -41,7 +36,7 @@ export default function Signup() {
   return (
         <div className="container">
       <Tile>
-        <h2 className="text-left" >Criar Conta</h2>
+        <h2 className="text-left" >Esqueci minha senha</h2>
 
         {error &&
           <InlineNotification
@@ -49,6 +44,13 @@ export default function Signup() {
             timeout={0}
             title={error}
             kind="error"
+          />}
+        {message &&
+          <InlineNotification
+            iconDescription="Fechar"
+            timeout={0}
+            title={message}
+            kind="success"
           />}
         <Form onSubmit={handleSubmit}>
           <div>
@@ -60,25 +62,6 @@ export default function Signup() {
               required
             />
           </div>
-          <div>
-            <TextInput.PasswordInput
-              id="password"
-              invalidText="Invalid error message."
-              placeholder="Senha"
-              ref={passwordRef}
-              required
-            />
-          </div>
-
-          <div>
-            <TextInput.PasswordInput
-              id="password"
-              invalidText="Invalid error message."
-              placeholder="Confirmar Senha"
-              ref={passwordConfirmRef}
-              required
-            />
-          </div>
           <div className="button-wrapper">
             <Button
               className="text-right"
@@ -87,13 +70,13 @@ export default function Signup() {
               tabIndex={0}
               type="submit"
             >
-              Criar
+              Enviar Email
             </Button>
           </div>
         </Form>
 
         <div className="signup-container">
-          <Link to="/login">Já tem uma conta?</Link>
+          <Link to="/login">Cancelar</Link>
         </div>
       </Tile>
 
