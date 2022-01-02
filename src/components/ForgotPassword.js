@@ -1,7 +1,15 @@
 import React, { useRef, useState } from 'react'
-import { Form, Button, Card, Alert } from 'react-bootstrap'
+import {
+  Form,
+  Button,
+  TextInput,
+  Tile,
+  InlineNotification,
+} from 'carbon-components-react'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from "react-router-dom"
+import '../styles/authentication.scss';
+
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -26,28 +34,52 @@ export default function ForgotPassword() {
   }
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Password Reset</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {message && <Alert variant="success">{message}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
+        <div className="container">
+      <Tile>
+        <h2 className="text-left" >Esqueci minha senha</h2>
 
-            <Button disabled={loading} className="w-100" type="submit">Reset Password</Button>
-          </Form>
-          <div className="w-100 text-center mt-3">
-            <Link to="/login">Login</Link>
+        {error &&
+          <InlineNotification
+            iconDescription="Fechar"
+            timeout={0}
+            title={error}
+            kind="error"
+          />}
+        {message &&
+          <InlineNotification
+            iconDescription="Fechar"
+            timeout={0}
+            title={message}
+            kind="success"
+          />}
+        <Form onSubmit={handleSubmit}>
+          <div>
+            <TextInput
+              id="email"
+              invalidText="Invalid error message."
+              placeholder="Email"
+              ref={emailRef}
+              required
+            />
           </div>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        Need an account? <Link to="/signup">Sign Up</Link>
-      </div>
-    </>
+          <div className="button-wrapper">
+            <Button
+              className="text-right"
+              disabled={loading}
+              kind="primary"
+              tabIndex={0}
+              type="submit"
+            >
+              Enviar Email
+            </Button>
+          </div>
+        </Form>
+
+        <div className="signup-container">
+          <Link to="/login">Cancelar</Link>
+        </div>
+      </Tile>
+
+    </div>
   )
 }
