@@ -1,18 +1,21 @@
 import React, { useRef, useState } from 'react'
-import { Form,
+import {
+  Form,
   Button,
   TextInput,
   Tile,
   InlineNotification,
-  } from 'carbon-components-react'
-import { useAuth } from '../contexts/AuthContext'
+} from 'carbon-components-react'
+import { useAuth } from '../../contexts/AuthContext'
 import { Link, useNavigate } from "react-router-dom"
-import '../styles/authentication.scss';
+import '../../styles/authentication.scss';
 
-export default function Login() {
+
+export default function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { login } = useAuth();
+  const passwordConfirmRef = useRef();
+  const { signup } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,21 +23,25 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault()
 
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      return setError('Passwords do not match');
+    }
+
     try {
       setError('');
       setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
+      await signup(emailRef.current.value, passwordRef.current.value);
       navigate('/');
     } catch {
-      setError('Failed to sign in');
+      setError('Failed to create an account');
     }
     setLoading(false)
   }
 
   return (
-    <div className="container">
+        <div className="container">
       <Tile>
-        <h2 className="text-left" >Log In</h2>
+        <h2 className="text-left" >Criar Conta</h2>
 
         {error &&
           <InlineNotification
@@ -62,8 +69,15 @@ export default function Login() {
               required
             />
           </div>
-          <div className="forgot-password-container">
-            <Link to="/forgot-password">Esqueceu a senha?</Link>
+
+          <div>
+            <TextInput.PasswordInput
+              id="password"
+              invalidText="Invalid error message."
+              placeholder="Confirmar Senha"
+              ref={passwordConfirmRef}
+              required
+            />
           </div>
           <div className="button-wrapper">
             <Button
@@ -73,12 +87,13 @@ export default function Login() {
               tabIndex={0}
               type="submit"
             >
-              Log In
+              Criar
             </Button>
           </div>
         </Form>
+
         <div className="signup-container">
-          <Link to="/signup">Sign Up</Link>
+          <Link to="/login">Já tem uma conta?</Link>
         </div>
       </Tile>
 
