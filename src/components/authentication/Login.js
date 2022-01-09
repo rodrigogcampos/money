@@ -9,6 +9,10 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Link, useNavigate } from "react-router-dom"
 import '../../styles/authentication.scss';
 
+import { firestore } from "../../firebase";
+import { doc, setDoc } from "firebase/firestore";
+
+
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -19,6 +23,15 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault()
+
+    console.log('test');
+
+    // Add a new document in collection "cities"
+    await setDoc(doc(firestore, "cities", "LA"), {
+      name: "Los Angeles",
+      state: "CA",
+      country: "USA"
+    });
 
     try {
       setError('');
@@ -46,6 +59,7 @@ export default function Login() {
         <Form onSubmit={handleSubmit}>
           <div>
             <TextInput
+              labelText=""
               id="email"
               invalidText="Invalid error message."
               placeholder="Email"
@@ -55,6 +69,7 @@ export default function Login() {
           </div>
           <div>
             <TextInput.PasswordInput
+              labelText=""
               id="password"
               invalidText="Invalid error message."
               placeholder="Senha"
