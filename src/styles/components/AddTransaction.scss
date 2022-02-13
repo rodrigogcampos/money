@@ -1,0 +1,108 @@
+.transaction-container {
+  form.bx--form {
+    .bx--grid {
+      padding: 0;
+      max-width: none;
+
+      .bx--row {
+        margin: 0;
+        margin-bottom: 20px;
+      }
+    }
+
+    .form-item-transaction-date {
+      min-width: 170px;
+      max-width: 170px;
+
+      .bx--date-picker, 
+      .bx--date-picker-container,
+      #transaction-date {
+        max-width: 100%;
+      }
+    }
+
+    .form-item-transaction-type {
+      max-width: 200px;
+      min-width: 200px;
+    }
+
+    .form-item-transaction-description {
+      min-width: 200px;
+    }
+
+    .form-item-transaction-category {
+      min-width: 200px;
+      max-width: 200px;
+    }
+
+    .form-item-transaction-amount {
+      min-width: 150px;
+      max-width: 150px;
+    }
+
+    .form-item-transaction-cost-center {
+      min-width: 200px;
+      max-width: 200px;
+    }
+
+    .form-item-transaction-status {
+      min-width: 100px;
+      max-width: 100px;
+
+      fieldset {
+        margin-bottom: 0;
+      }
+
+      legend {
+        margin-bottom: 2px;
+      }
+
+      .bx--radio-button-wrapper {
+        margin-bottom: 2px;
+      }
+    }
+
+    .bx--row.more-details-row {
+      flex-wrap: nowrap;
+      margin-bottom: 0;
+    
+      .bx--accordion {
+        position: relative;
+
+        .bx--accordion__item {
+          border: none;
+        }
+
+        .bx--accordion__heading {
+          width: 200px;
+          right: 0;
+          top: 10px;
+          position: absolute;
+        }
+
+        .bx--accordion__heading:hover::before {
+          background-color: transparent;
+        }
+
+        .bx--accordion__heading:focus::before {
+          border: none;
+        }
+
+        .bx--accordion__title {
+          text-align: right;
+          margin-right: 1rem;
+        }
+
+        .bx--accordion__content {
+          padding-left: 0;
+        }
+      }
+    }
+
+    .button-add-transaction-wrapper {
+      button {
+
+      }
+    }
+  }
+}

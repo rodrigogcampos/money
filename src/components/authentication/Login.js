@@ -9,10 +9,6 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Link, useNavigate } from "react-router-dom"
 import '../../styles/authentication.scss';
 
-import { firestore } from "../../firebase";
-import { doc, setDoc } from "firebase/firestore";
-
-
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -26,17 +22,13 @@ export default function Login() {
 
     console.log('test');
 
-    // Add a new document in collection "cities"
-    await setDoc(doc(firestore, "cities", "LA"), {
-      name: "Los Angeles",
-      state: "CA",
-      country: "USA"
-    });
+    
 
     try {
       setError('');
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
+
       navigate('/');
     } catch {
       setError('Failed to sign in');
