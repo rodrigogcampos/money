@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Form,
   Button,
   TextInput,
@@ -22,7 +22,215 @@ import { v4 as uuid } from 'uuid';
 import NumberFormat from 'react-number-format';
 import '../../styles/components/AddTransaction.scss';
 
-export default function AddTransaction() {
+// Transaction Description field.
+export function TransactionDescription(props) {
+  const value = props.value ? props.value : ""
+
+  return <TextInput
+    labelText="Descrição"
+    id="transaction-description"
+    invalidText="Invalid error message."
+    placeholder="aaa"
+    ref={props.transactionRef}
+    invalid={false}
+    defaultValue={value}
+  />
+}
+
+// Transaction Date field.
+export function TransactionDate(props) {
+  const value = props.value ? new Date(props.value * 1000) : "";
+
+  return <DatePicker dateFormat="Y/m/d" datePickerType="single" ref={props.transactionRef} size="lg" value={value}>
+    <DatePickerInput
+      id="transaction-date"
+      placeholder=""
+      labelText="Data"     
+      pattern="\d{4}\/\d{1,2}\/\d{1,2}"
+      invalid={false}
+      invalidText="Data Invalida"
+    />
+  </DatePicker>
+}
+
+// Transaction Type field.
+export function TransactionType(props) {
+  return <ComboBox
+    id="transaction-type"
+    titleText="Tipo"
+    placeholder=""
+    items={props.options}
+    itemToString={(item) => (item ? item.text : '')}
+    ref={props.transactionRef}
+    onChange={() => {}}
+  />
+}
+
+// Transaction Amount field.
+export function TransactionAmount(props) {
+  return <><label htmlFor="number-id" className="bx--label">Valor</label>
+    <NumberFormat 
+      id="number-id"
+      className="bx--text-input bx--text__input" 
+      decimalSeparator=","
+      thousandSeparator="."
+      decimalScale="2"
+      fixedDecimalScale={true}
+      prefix={'$'}
+      placeholder="$0,00"
+      ref={props.transactionRef}
+    />
+  </>
+}
+
+// Transaction Category field.
+export function TransactionCategory(props){
+  return <ComboBox
+    id="transaction-category"
+    titleText="Categoria"
+    placeholder=""
+    items={props.options}
+    itemToString={(item) => (item ? item.text : '')}
+    ref={props.transactionRef}
+    onChange={() => {}}
+  />
+}
+
+// Transaction Cost Center field.
+export function TransactionCostCenter(props) {
+  return <ComboBox
+    id="transaction-cost-center"
+    titleText="Centro de Custo"
+    placeholder=""
+    items={props.options}
+    itemToString={(item) => (item ? item.text : '')}
+    ref={props.transactionRef}
+    onChange={() => {}}
+  />
+}
+
+// Transaction Status field.
+export function TransactionStatus(props) {
+  return <FormGroup legendText="Status" >
+    <RadioButtonGroup
+      defaultSelected="paid"
+      legend="status"
+      name="transaction-status-group"
+      valueSelected="paid"
+      orientation="vertical"
+      ref={props.transactionRef}
+    >
+      <RadioButton id="transaction-status-paid" labelText="Pago" value="paid" />
+      <RadioButton id="transaction-status-pending" labelText="Pendente" value="pending" />
+    </RadioButtonGroup>
+  </FormGroup>  
+}
+
+// Transaction Frequency field.
+export function TransactionFrequency(props) {
+  return <FormGroup legendText="Frequencia" >
+    <RadioButtonGroup
+      defaultSelected="fixed"
+      legend="frequency"
+      name="transaction-frequency-group"
+      valueSelected="fixed"
+      orientation="vertical"
+      ref={props.transactionRef}
+    >
+      <RadioButton id="transaction-frequency-fixed" labelText="Fixo" value="fixed" />
+      <RadioButton id="transaction-frequency-variable" labelText="Variável" value="variable" />
+    </RadioButtonGroup>
+  </FormGroup>
+}
+
+// Transaction Currency field.
+export function TransactionCurrency(props) {
+  return <ComboBox
+    id="transaction-currency"
+    titleText="Moeda"
+    placeholder=""
+    items={props.options}
+    itemToString={(item) => (item ? item.text : '')}
+    initialSelectedItem={props.options.find(el => el.text === 'BRL')}
+    ref={props.transactionRef}
+    onChange={() => {}}
+  />
+}
+
+// Transaction Currency Convertion Rate field.
+export function TransactionCurrencyConvertionRate(props) {
+  return <><label htmlFor="transaction-currency-convertion-rate" className="bx--label">Valor de conversão</label>
+    <NumberFormat 
+      id="transaction-currency-convertion-rate"
+      className="bx--text-input bx--text__input" 
+      decimalSeparator=","
+      thousandSeparator="."
+      decimalScale="5"
+      fixedDecimalScale={true}
+      value="1,00"
+      ref={props.transactionRef}
+    /></>
+}
+
+// Transaction Amount Converted field.
+export function TransactionAmountConverted(props) {
+  return <><label htmlFor="transaction-amount-converted" className="bx--label">Valor Convertido</label>
+    <NumberFormat 
+      id="transaction-amount-converted"
+      className="bx--text-input bx--text__input" 
+      decimalSeparator=","
+      thousandSeparator="."
+      decimalScale="2"
+      fixedDecimalScale={true}
+      prefix={'$'}
+      placeholder="$0,00"
+      ref={props.transactionRef}
+    /></>
+}
+
+// Transaction Stock Quantity field.
+export function TransactionStockQuantity(props) {
+  return <><label htmlFor="transaction-stock-quantity" className="bx--label">Quantidade de Ativos</label>
+    <NumberFormat 
+      id="transaction-stock-quantity"
+      className="bx--text-input bx--text__input" 
+      decimalSeparator=","
+      thousandSeparator="."
+      decimalScale="8"
+      placeholder="0,00"
+      ref={props.transactionRef}
+    /></>
+}
+
+// Transaction Stock Ticker field.
+export function TransactionStockTicker(props) {
+  return <><TextInput
+    labelText="Ticker do Ativo"
+    id="transaction-stock-ticker"
+    invalidText="Invalid error message."
+    placeholder=""
+    ref={props.transactionRef}
+    defaultValue={props.value ? props.value : ""}
+    /></> 
+}
+
+// Transaction Stock Price field.
+export function TransactionStockPrice(props) {
+  return <><label htmlFor="transaction-stock-price form-item-transaction-stock-price" className="bx--label">Preço do Ativo</label>
+    <NumberFormat 
+      id="transaction-stock-price"
+      className="bx--text-input bx--text__input" 
+      decimalSeparator=","
+      thousandSeparator="."
+      decimalScale="2"
+      fixedDecimalScale={true}
+      prefix={'$'}
+      placeholder="$0,00"
+      ref={props.transactionRef}
+    /></>
+}
+
+export default function AddTransaction({getTransactions}) {
   const transactionDateRef = useRef();
   const transactionDescriptionRef = useRef();
   const transactionStockQuantityRef = useRef();
@@ -106,9 +314,6 @@ export default function AddTransaction() {
   async function handleSubmit(e) {
     e.preventDefault();
     const transactionId = "transaction-" + uuid();
-    console.log("test");
-    console.log(Timestamp.fromDate(new Date(transactionDateRef.current.inputField.value)));
-    console.log(transactionFrequencyRef);
 
     try {
       setError('');
@@ -137,214 +342,12 @@ export default function AddTransaction() {
       setError('Falha ao adicionar transação');
     }
     setLoading(false)
+    getTransactions();
   }
 
   function inputValidation() {
-    console.log('testref')
-    console.log('ref');
-  }
-
-  // Transaction Date field.
-  const TransactionDate = () => {
-    return <DatePicker dateFormat="Y/m/d" datePickerType="single" ref={transactionDateRef} size="lg" onChange={inputValidation}>
-      <DatePickerInput
-        id="transaction-date"
-        placeholder=""
-        labelText="Data"     
-        pattern="\d{4}\/\d{1,2}\/\d{1,2}"
-        invalid={false}
-        invalidText="Data Invalida"
-      />
-    </DatePicker>
-  }
-
-  // Transaction Type field.
-  const TransactionType = () => {
-    return <ComboBox
-      id="transaction-type"
-      titleText="Tipo"
-      placeholder=""
-      items={types}
-      itemToString={(item) => (item ? item.text : '')}
-      ref={transactionTypeRef}
-      onChange={() => {}}
-    />
-  }
-
-  // Transaction Description field.
-  const TransactionDescription = () => {
-    return <TextInput
-      labelText="Descrição"
-      id="transaction-description"
-      invalidText="Invalid error message."
-      placeholder=""
-      ref={transactionDescriptionRef}
-      required
-      invalid={false}
-    />
-  }
-
-  // Transaction Amount field.
-  const TransactionAmount = () => {
-    return <><label htmlFor="number-id" className="bx--label">Valor</label>
-      <NumberFormat 
-        id="number-id"
-        className="bx--text-input bx--text__input" 
-        decimalSeparator=","
-        thousandSeparator="."
-        decimalScale="2"
-        fixedDecimalScale={true}
-        prefix={'$'}
-        placeholder="$0,00"
-        ref={transactionAmountRef}
-      />
-    </>
-  }
-
-  // Transaction Category field.
-  const TransactionCategory = () => {
-    return <ComboBox
-      id="transaction-category"
-      titleText="Categoria"
-      placeholder=""
-      items={categories}
-      itemToString={(item) => (item ? item.text : '')}
-      ref={transactionCategoryRef}
-      onChange={() => {}}
-    />
-  }
-
-  // Transaction Cost Center field.
-  const TransactionCostCenter = () => {
-    return <ComboBox
-      id="transaction-cost-center"
-      titleText="Centro de Custo"
-      placeholder=""
-      items={costCenters}
-      itemToString={(item) => (item ? item.text : '')}
-      ref={transactionCostCenterRef}
-      onChange={() => {}}
-    />
-  }
-
-  // Transaction Status field.
-  const TransactionStatus = () => {
-    return <FormGroup legendText="Status" >
-      <RadioButtonGroup
-        defaultSelected="paid"
-        legend="status"
-        name="transaction-status-group"
-        valueSelected="paid"
-        orientation="vertical"
-        ref={transactionStatusRef}
-      >
-        <RadioButton id="transaction-status-paid" labelText="Pago" value="paid" />
-        <RadioButton id="transaction-status-pending" labelText="Pendente" value="pending" />
-      </RadioButtonGroup>
-    </FormGroup>  
-  }
-
-  // Transaction Frequency field.
-  const TransactionFrequency = () => {
-    return <FormGroup legendText="Frequencia" >
-      <RadioButtonGroup
-        defaultSelected="fixed"
-        legend="frequency"
-        name="transaction-frequency-group"
-        valueSelected="fixed"
-        orientation="vertical"
-        ref={transactionFrequencyRef}
-      >
-        <RadioButton id="transaction-frequency-fixed" labelText="Fixo" value="fixed" />
-        <RadioButton id="transaction-frequency-variable" labelText="Variável" value="variable" />
-      </RadioButtonGroup>
-    </FormGroup>
-  }
-
-  // Transaction Currency field.
-  const TransactionCurrency = () => {
-    return <ComboBox
-      id="transaction-currency"
-      titleText="Moeda"
-      placeholder=""
-      items={currencies}
-      itemToString={(item) => (item ? item.text : '')}
-      initialSelectedItem={currencies.find(el => el.text === 'BRL')}
-      ref={transactionCurrencyRef}
-      onChange={() => {}}
-    />
-  }
-
-  // Transaction Currency Convertion Rate field.
-  const TransactionCurrencyConvertionRate = () => {
-    return <><label htmlFor="transaction-currency-convertion-rate" className="bx--label">Valor de conversão</label>
-      <NumberFormat 
-        id="transaction-currency-convertion-rate"
-        className="bx--text-input bx--text__input" 
-        decimalSeparator=","
-        thousandSeparator="."
-        decimalScale="5"
-        fixedDecimalScale={true}
-        value="1,00"
-        ref={transactionConversionRateRef}
-      /></>
-  }
-
-  // Transaction Amount Converted field.
-  const TransactionAmountConverted = () => {
-    return <><label htmlFor="transaction-amount-converted" className="bx--label">Valor Convertido</label>
-      <NumberFormat 
-        id="transaction-amount-converted"
-        className="bx--text-input bx--text__input" 
-        decimalSeparator=","
-        thousandSeparator="."
-        decimalScale="2"
-        fixedDecimalScale={true}
-        prefix={'$'}
-        placeholder="$0,00"
-        ref={transactionAmountBRLRef}
-      /></>
-  }
-
-  // Transaction Stock Quantity field.
-  const TransactionStockQuantity = () => {
-   return <><label htmlFor="transaction-stock-quantity" className="bx--label">Quantidade de Ativos</label>
-      <NumberFormat 
-        id="transaction-stock-quantity"
-        className="bx--text-input bx--text__input" 
-        decimalSeparator=","
-        thousandSeparator="."
-        decimalScale="8"
-        placeholder="0,00"
-        ref={transactionStockQuantityRef}
-      /></>
-  }
-
-  // Transaction Stock Ticker field.
-  const TransactionStockTicker = () => {
-    return <><TextInput
-      labelText="Ticker do Ativo"
-      id="transaction-stock-ticker"
-      invalidText="Invalid error message."
-      placeholder=""
-      ref={transactionStockTickerRef}
-      /></> 
-  }
-
-  // Transaction Stock Price field.
-  const TransactionStockPrice = () => {
-    return <><label htmlFor="transaction-stock-price form-item-transaction-stock-price" className="bx--label">Preço do Ativo</label>
-      <NumberFormat 
-        id="transaction-stock-price"
-        className="bx--text-input bx--text__input" 
-        decimalSeparator=","
-        thousandSeparator="."
-        decimalScale="2"
-        fixedDecimalScale={true}
-        prefix={'$'}
-        placeholder="$0,00"
-        ref={transactionStockPriceRef}
-      /></>
+    /* console.log('testref')
+    console.log('ref'); */
   }
 
   const TransactionForm = () => {
@@ -352,35 +355,35 @@ export default function AddTransaction() {
       <div className="bx--grid bx--grid--narrow">      
         <div className="bx--row">
           <div className="bx--col form-item form-item-transaction-date">                  
-            <TransactionDate />
+            <TransactionDate transactionRef={transactionDateRef}/>
           </div>
 
           <div className="bx--col form-item form-item-transaction-type">
-            <TransactionType />
+            <TransactionType transactionRef={transactionTypeRef} options={types}/>
           </div>
 
           <div className="bx--col form-item form-item-transaction-description">
-            <TransactionDescription />
+            <TransactionDescription transactionRef={transactionDescriptionRef}/>
           </div>
 
           {/* Amount */}
           <div className="bx--col form-item form-item-transaction-amount">
-            <TransactionAmount />
+            <TransactionAmount transactionRef={transactionAmountRef}/>
           </div>
 
           {/* Category */}
           <div className="bx--col form-item form-item-transaction-category">
-            <TransactionCategory />
+            <TransactionCategory transactionRef={transactionCategoryRef} options={categories}/>
           </div>
         
           {/* Cost Center */}
           <div className="bx--col form-item form-item-transaction-cost-center">
-            <TransactionCostCenter />
+            <TransactionCostCenter transactionRef={transactionCostCenterRef} options={costCenters}/>
           </div>
 
           {/* Status */}
           <div className="bx--col-lg-1 form-item form-item-transaction-status">
-            <TransactionStatus />
+            <TransactionStatus transactionRef={transactionStatusRef}/>
           </div>
         </div>
           
@@ -390,22 +393,22 @@ export default function AddTransaction() {
               <Tabs>
                 <Tab id="tab-frequency" label="Frequência">
                   <div className="bx--col-lg-1 form-item form-item-transaction-frequency">
-                    <TransactionFrequency />
+                    <TransactionFrequency transactionRef={transactionFrequencyRef}/>
                   </div>
                 </Tab>
 
                 <Tab id="tab-currency" label="Moeda">
                   <div className="bx--row">
                     <div className="bx--col-lg-2 form-item form-item-transaction-currency">
-                      <TransactionCurrency />
+                      <TransactionCurrency transactionRef={transactionCurrencyRef} options={currencies}/>
                     </div>
 
                     <div className="bx--col-lg-2 form-item form-item-transaction-currency-covertion-rate">
-                      <TransactionCurrencyConvertionRate />
+                      <TransactionCurrencyConvertionRate transactionRef={transactionConversionRateRef}/>
                     </div>
 
                     <div className="bx--col-lg-2 form-item form-item-transaction-amount-converted">
-                      <TransactionAmountConverted />
+                      <TransactionAmountConverted transactionRef={transactionAmountBRLRef}/>
                     </div>
                   </div>
                 </Tab>
@@ -413,15 +416,15 @@ export default function AddTransaction() {
                 <Tab id="tab-stocks" label="Ativos">
                   <div className="bx--row">
                     <div className="bx--col-lg-2 form-item form-item-transaction-stock-quantity">
-                      <TransactionStockQuantity />
+                      <TransactionStockQuantity transactionRef={transactionStockQuantityRef}/>
                     </div>
 
                     <div className="bx--col-lg-2 form-item form-item-transaction-stock-ticker">
-                      <TransactionStockTicker />
+                      <TransactionStockTicker transactionRef={transactionStockTickerRef}/>
                     </div>
 
-                    <div className="bx--col-lg-2 form-item">
-                      <TransactionStockPrice />
+                    <div className="bx--col-lg-2 form-item form-item-transaction-stock-price">
+                      <TransactionStockPrice transactionRef={transactionStockPriceRef}/>
                     </div>
                   </div>
                 </Tab>
